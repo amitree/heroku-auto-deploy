@@ -17,4 +17,6 @@ sudo cp bin/deploy_to_heroku.tmp /usr/local/bin/deploy_to_heroku
 sudo chmod 0755 /usr/local/bin/deploy_to_heroku
 
 sudo cp launchd/com.amitree.herokuAutoDeploy.plist /Library/LaunchDaemons
+launchctl unload -w /Library/LaunchDaemons/com.amitree.herokuAutoDeploy.plist || true
 launchctl load -w /Library/LaunchDaemons/com.amitree.herokuAutoDeploy.plist
+echo "Installed."

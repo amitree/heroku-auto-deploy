@@ -13,4 +13,6 @@ end.parse!
 
 $LOAD_PATH << File.expand_path('../../lib', __FILE__)
 require 'auto_deployer'
+puts "Starting deploy_to_heroku..."
 AutoDeployer.new(options).deploy
+puts "Exiting."

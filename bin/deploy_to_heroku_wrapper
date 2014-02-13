@@ -1,3 +1,5 @@
-#!/bin/bash
+#!/bin/bash -l
 
-exec __DIR__/bin/deploy_to_heroku >>/var/log/deploy_to_heroku.log 2>&1
+exec >>/var/log/deploy_to_heroku.log 2>&1
+cd __DIR__
+exec bin/deploy_to_heroku | perl -MPOSIX -ne 'BEGIN { $, = " " } print strftime("%Y-%m-%d %H:%M:%S", localtime), $_;' 
