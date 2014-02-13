@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec __DIR__/bin/deploy_to_heroku >/var/log/deploy_to_heroku.log 2>&1
