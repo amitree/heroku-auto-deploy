@@ -33,6 +33,7 @@ GEM
       nokogiri (>= 1.5.5)
       nokogiri-happymapper (>= 0.5.4)
       rest-client (~> 1.6.0)
+    rendezvous (0.0.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec (2.14.1)
@@ -52,7 +53,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  heroku-api
-  octokit
-  pivotal-tracker
-  rspec
+  heroku-api (= 0.3.17)
+  octokit (= 2.7.1)
+  pivotal-tracker (= 0.5.12)
+  rendezvous (= 0.0.2)
+  rspec (= 2.14.1)

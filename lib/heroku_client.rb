@@ -1,5 +1,6 @@
 require 'heroku-api'
 require 'heroku/new_api'
+require 'rendezvous'
 
 class HerokuClient
   class Error < StandardError
@@ -38,6 +39,7 @@ class HerokuClient
     puts "Deploying slug to production: #{slug}"
     unless options[:dry_run]
       @heroku_new.post_release(@production_app_name, {'slug' => slug, 'description' => "Promote #{@staging_app_name} #{staging_release_name}"})
+      db_migrate_on_production
     end
   end
 
@@ -49,8 +51,19 @@ class HerokuClient
     result.body['slug']['id'] || raise(Error.new("Could not find slug in API response: #{result.inspect}"))
   end
 
+  def db_migrate_on_production
+    heroku_run(@production_app_name, 'rake db:migrate')
+  end
+
 private
   def get_releases(app_name)
     @heroku.get_releases(app_name).body
+  end
+
+  def heroku_run(app_name, command)
+    puts "Running command on #{app_name}: #{command}..."
+    data = @heroku.post_ps(app_name, command, { attach: true }).body
+    Rendezvous.start(url: data['rendezvous_url'])
+    puts "Done."
   end
 end
