@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: deploy_to_heroku [options]"
+
+  opts.on("-n", "--dry-run", "Dry run (don't actually deploy)") do |v|
+    options[:dry_run] = v
+  end
+end.parse!
+
+$LOAD_PATH << File.expand_path('../../lib', __FILE__)
+require 'auto_deployer'
+AutoDeployer.new(options).deploy

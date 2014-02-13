@@ -4,11 +4,12 @@ require 'heroku_client'
 require 'pivotal-tracker'
 
 class AutoDeployer
-  def initialize
+  def initialize(options={})
     @git = Git.new GITHUB_REPO, GITHUB_USERNAME, GITHUB_TOKEN
     @heroku = HerokuClient.new HEROKU_API_KEY, HEROKU_STAGING_APP, HEROKU_PRODUCTION_APP
     PivotalTracker::Client.token = TRACKER_TOKEN
     @tracker_cached_status = {}
+    @options = options
   end
 
   def release_to_deploy
@@ -37,7 +38,12 @@ class AutoDeployer
 
   def deploy
     release = release_to_deploy
-    puts "Deploy #{release['name']} to production"
+    if release.nil?
+      puts "No new release to deploy"
+    else
+      puts "Deploy #{release['name']} to production"
+      @heroku.deploy_to_production(release['name'], @options)
+    end
   end
 
   def get_tracker_status(story_id)
