@@ -59,7 +59,7 @@ class AutoDeployer
   end
 
   def notify_team(email, old_release, new_release)
-    git_commits = @git.commits_between(old_release, new_release)
+    git_commits = @git.commits_between(old_release['commit'], new_release['commit'])
     story_ids = @git.stories_worked_on_between(old_release, new_release)
 
     message = "<h2>Pushing new code to production</h2>"
