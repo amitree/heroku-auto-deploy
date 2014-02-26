@@ -9,6 +9,10 @@ OptionParser.new do |opts|
   opts.on("-n", "--dry-run", "Dry run (don't actually deploy)") do |v|
     options[:dry_run] = v
   end
+
+  opts.on("--notify", "Email address to notify upon deployment") do |email|
+    options[:notify_email] = email
+  end
 end.parse!
 
 $LOAD_PATH << File.expand_path('../../lib', __FILE__)

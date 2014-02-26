@@ -2,13 +2,15 @@ require 'secrets'
 require 'git'
 require 'heroku_client'
 require 'pivotal-tracker'
+require 'cgi'
+require 'mail'
 
 class AutoDeployer
   def initialize(options={})
     @git = Git.new GITHUB_REPO, GITHUB_USERNAME, GITHUB_TOKEN
     @heroku = HerokuClient.new HEROKU_API_KEY, HEROKU_STAGING_APP, HEROKU_PRODUCTION_APP
     PivotalTracker::Client.token = TRACKER_TOKEN
-    @tracker_cached_status = {}
+    @tracker_cache = {}
     @options = options
   end
 
@@ -37,16 +39,60 @@ class AutoDeployer
   end
 
   def deploy
+    old_release = @heroku.current_production_release
     release = release_to_deploy
     if release.nil?
       puts "No new release to deploy"
     else
       puts "Deploy #{release['name']} to production"
       @heroku.deploy_to_production(release['name'], @options)
+      notify_team(@options[:notify_email], old_release, release) if @options[:notify_email]
     end
   end
 
   def get_tracker_status(story_id)
-    @tracker_cached_status[story_id] ||= PivotalTracker::Project.find(TRACKER_PROJECT_ID).stories.find(story_id).current_state
+    tracker_data(story_id).current_state
+  end
+
+  def tracker_data(story_id)
+    @tracker_cache[story_id] ||= PivotalTracker::Project.find(TRACKER_PROJECT_ID).stories.find(story_id)
+  end
+
+  def notify_team(email, old_release, new_release)
+    git_commits = @git.commits_between(old_release, new_release)
+    story_ids = @git.stories_worked_on_between(old_release, new_release)
+
+    message = "<h2>Pushing new code to production</h2>"
+    message += "<h3>Git commit log</h3>"
+    message += "<ul>"
+    git_commits.each do |commit|
+      message += %(<li><a href="#{@git.link_to commit.sha}">#{CGI.escapeHTML commit.commit.message}</a></li>)
+    end
+    message += "</ul>"
+
+    message += "<h3>Stories delivered</h3>"
+    message += "<ul>"
+    story_ids.each do |story_id|
+      story = tracker_data(story_id)
+      message += %(<li><a href="#{story.url}">##{story_id} #{CGI.escapeHTML story.name}</a></li>)
+    end
+    message += "</ul>"
+
+    send_mail(email, message)
+  end
+
+  def send_mail(to_address, message)
+    mail = Mail.new do
+      to to_address
+      from NOTIFY_EMAIL_FROM
+      subject 'New code deployed to production'
+      html_part do
+        content_type 'text/html'
+        body message
+      end
+    end
+
+    mail.delivery_method :sendmail
+    mail.deliver
   end
 end
