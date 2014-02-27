@@ -63,7 +63,10 @@ private
   def heroku_run(app_name, command)
     puts "Running command on #{app_name}: #{command}..."
     data = @heroku.post_ps(app_name, command, { attach: true }).body
-    Rendezvous.start(url: data['rendezvous_url'])
+    read, write = IO.pipe
+    Rendezvous.start(url: data['rendezvous_url'], input: read)
+    read.close
+    write.close
     puts "Done."
   end
 end
