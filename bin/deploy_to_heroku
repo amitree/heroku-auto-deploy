@@ -10,7 +10,7 @@ OptionParser.new do |opts|
     options[:dry_run] = v
   end
 
-  opts.on("--notify", "Email address to notify upon deployment") do |email|
+  opts.on("--notify EMAIL", "Email address to notify upon deployment") do |email|
     options[:notify_email] = email
   end
 end.parse!
