@@ -3,6 +3,8 @@
 require 'optparse'
 
 options = {}
+options[:notify_email] = NOTIFY_EMAIL_TO
+
 OptionParser.new do |opts|
   opts.banner = "Usage: deploy_to_heroku [options]"
 
