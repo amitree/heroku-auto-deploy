@@ -9,6 +9,6 @@
       <string>/usr/local/bin/deploy_to_heroku</string>
     </array>
     <key>StartInterval</key>
-    <integer>900</integer>
+    <integer>180</integer>
   </dict>
 </plist>
