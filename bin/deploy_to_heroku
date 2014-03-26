@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH << File.expand_path('../../lib', __FILE__)
 require 'optparse'
-require 'secrets'
+require 'auto_deployer'
 
 options = {}
 options[:notify_email] = NOTIFY_EMAIL_TO
@@ -18,8 +19,6 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-$LOAD_PATH << File.expand_path('../../lib', __FILE__)
-require 'auto_deployer'
 puts "Starting deploy_to_heroku..."
 AutoDeployer.new(options).deploy
 puts "Exiting."
