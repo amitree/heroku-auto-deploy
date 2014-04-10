@@ -52,7 +52,7 @@ class HerokuClient
   end
 
   def db_migrate_on_production
-    heroku_run(@production_app_name, 'rake db:migrate')
+    heroku_run(@production_app_name, 'rake db:migrate db:seed')
   end
 
 private
