@@ -9,6 +9,8 @@ GEM
     excon (0.31.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
+    haml (4.0.5)
+      tilt
     happymapper (0.4.1)
       libxml-ruby (~> 2.0)
     heroku-api (0.3.17)
@@ -54,6 +56,7 @@ GEM
     sawyer (0.5.3)
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
+    tilt (2.0.1)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -62,6 +65,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  haml (= 4.0.5)
   heroku-api (= 0.3.17)
   mail (= 2.5.4)
   octokit (= 2.7.1)

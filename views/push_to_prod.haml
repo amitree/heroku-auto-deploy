@@ -1,0 +1,21 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+  %body
+    %h2 Pushing new code to production
+    %h3 Git commit log
+    %ul
+      - git_commits.each do |commit|
+        %li
+          %a{href: @git.link_to(commit.sha)}
+            = commit.commit.message
+
+    %h3 Stories delivered
+    %ul
+      - story_ids.each do |story_id|
+        - story = tracker_data(story_id)
+        %li
+          %a{href: story.url}
+            \##{story_id} #{story.name}
+

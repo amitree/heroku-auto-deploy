@@ -1,0 +1,13 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+  %body
+    %h1
+      = exception.class
+    %div
+      #{exception.message}
+      %ul
+        - exception.backtrace.each do |line|
+          = line
+          %br

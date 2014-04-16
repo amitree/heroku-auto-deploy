@@ -2,7 +2,7 @@ require 'secrets'
 require 'git'
 require 'heroku_client'
 require 'pivotal-tracker'
-require 'cgi'
+require 'haml'
 require 'mail'
 
 class AutoDeployer
@@ -46,8 +46,11 @@ class AutoDeployer
     else
       puts "Deploy #{release['name']} to production"
       @heroku.deploy_to_production(release['name'], @options)
-      notify_team(@options[:notify_email], old_release, release) if @options[:notify_email]
+      notify_team old_release, release
     end
+  rescue => e
+    send_message :error_notification, 'Exception caught during production deployment', exception: e
+    raise e
   end
 
   def get_tracker_status(story_id)
@@ -58,34 +61,23 @@ class AutoDeployer
     @tracker_cache[story_id] ||= PivotalTracker::Project.find(TRACKER_PROJECT_ID).stories.find(story_id)
   end
 
-  def notify_team(email, old_release, new_release)
+  def notify_team(old_release, new_release)
     git_commits = @git.commits_between(old_release['commit'], new_release['commit'])
     story_ids = @git.stories_worked_on_between(old_release['commit'], new_release['commit'])
-
-    message = "<h2>Pushing new code to production</h2>"
-    message += "<h3>Git commit log</h3>"
-    message += "<ul>"
-    git_commits.each do |commit|
-      message += %(<li><a href="#{@git.link_to commit.sha}">#{CGI.escapeHTML commit.commit.message}</a></li>)
-    end
-    message += "</ul>"
-
-    message += "<h3>Stories delivered</h3>"
-    message += "<ul>"
-    story_ids.each do |story_id|
-      story = tracker_data(story_id)
-      message += %(<li><a href="#{story.url}">##{story_id} #{CGI.escapeHTML story.name}</a></li>)
-    end
-    message += "</ul>"
-
-    send_mail(email, message)
+    send_message(:push_to_prod, 'New code deployed to production', git_commits: git_commits, story_ids: story_ids)
   end
 
-  def send_mail(to_address, message)
+  def send_message(template, subject, locals={})
+    send_mail @options[:notify_email], subject, Haml::Engine.new(File.read("views/#{template}.haml"), escape_html: true, escape_attrs: true).render(self, locals)
+  end
+
+  def send_mail(to_address, subject, message)
+    return unless to_address
+    puts "Sending email to '#{to_address}' with subject '#{subject}'"
     mail = Mail.new do
       to to_address
       from NOTIFY_EMAIL_FROM
-      subject 'New code deployed to production'
+      subject subject
       html_part do
         content_type 'text/html'
         body message
