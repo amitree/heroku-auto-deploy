@@ -68,7 +68,16 @@ class AutoDeployer
   end
 
   def send_message(template, subject, locals={})
-    send_mail @options[:notify_email], subject, Haml::Engine.new(File.read("views/#{template}.haml"), escape_html: true, escape_attrs: true).render(self, locals)
+    send_mail email_address_for(template), subject, Haml::Engine.new(File.read("views/#{template}.haml"), escape_html: true, escape_attrs: true).render(self, locals)
+  end
+
+  def email_address_for(template)
+    case template
+    when :error_notification
+      @options[:errors_email] || @options[:notify_email]
+    else
+      @options[:notify_email]
+    end
   end
 
   def send_mail(to_address, subject, message)
