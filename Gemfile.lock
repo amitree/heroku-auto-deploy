@@ -56,6 +56,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
+    xray (1.1)
 
 PLATFORMS
   ruby
@@ -66,3 +67,4 @@ DEPENDENCIES
   heroku_client (= 0.0.4)
   mail (= 2.5.4)
   pivotal-tracker (= 0.5.12)
+  xray
