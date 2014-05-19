@@ -17,7 +17,7 @@ GEM
     heroku-api (0.3.17)
       excon (~> 0.27)
       multi_json (~> 1.8.2)
-    heroku_client (0.0.2)
+    heroku_client (0.0.4)
       heroku-api (= 0.3.17)
       rendezvous (= 0.0.2)
     libxml-ruby (2.7.0)
@@ -63,6 +63,6 @@ PLATFORMS
 DEPENDENCIES
   git_client (= 0.0.2)
   haml (= 4.0.5)
-  heroku_client (= 0.0.2)
+  heroku_client (= 0.0.4)
   mail (= 2.5.4)
   pivotal-tracker (= 0.5.12)
