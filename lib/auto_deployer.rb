@@ -1,14 +1,14 @@
 require 'secrets'
-require 'git'
-require 'heroku_client'
+require 'amitree/git_client'
+require 'amitree/heroku_client'
 require 'pivotal-tracker'
 require 'haml'
 require 'mail'
 
 class AutoDeployer
   def initialize(options={})
-    @git = Git.new GITHUB_REPO, GITHUB_USERNAME, GITHUB_TOKEN
-    @heroku = HerokuClient.new HEROKU_API_KEY, HEROKU_STAGING_APP, HEROKU_PRODUCTION_APP
+    @git = Amitree::GitClient.new GITHUB_REPO, GITHUB_USERNAME, GITHUB_TOKEN
+    @heroku = Amitree::HerokuClient.new HEROKU_API_KEY, HEROKU_STAGING_APP, HEROKU_PRODUCTION_APP
     PivotalTracker::Client.token = TRACKER_TOKEN
     @tracker_cache = {}
     @options = options
