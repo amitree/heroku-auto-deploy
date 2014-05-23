@@ -1,10 +1,9 @@
 require 'secrets'
 require 'amitree/git_client'
 require 'amitree/heroku_client'
-require 'pivotal-tracker'
+require 'amitree/heroku_deployer'
 require 'haml'
 require 'mail'
-require 'deployment_helper'
 
 class AutoDeployer
   RETRY_STATE_FILE = '/tmp/auto_deployer_retries.yml'
@@ -14,8 +13,7 @@ class AutoDeployer
 
     @git = Amitree::GitClient.new GITHUB_REPO, GITHUB_USERNAME, GITHUB_TOKEN
     @heroku = Amitree::HerokuClient.new HEROKU_API_KEY, HEROKU_STAGING_APP, HEROKU_PRODUCTION_APP
-
-    @deploy_helper = DeploymentHelper.new(git: @git, heroku: @heroku, tracker_project_id: TRACKER_PROJECT_ID, tracker_token: TRACKER_TOKEN)
+    @deploy_helper = Amitree::HerokuDeployer.new(git: @git, heroku: @heroku, tracker_project_id: TRACKER_PROJECT_ID, tracker_token: TRACKER_TOKEN)
   end
 
   def release_to_deploy
