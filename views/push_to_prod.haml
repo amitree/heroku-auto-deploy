@@ -14,8 +14,7 @@
     %h3 Stories delivered
     %ul
       - story_ids.each do |story_id|
-        - story = tracker_data(story_id)
+        - story = @deploy_helper.tracker_data(story_id)
         %li
           %a{href: story.url}
             \##{story_id} #{story.name}
-
