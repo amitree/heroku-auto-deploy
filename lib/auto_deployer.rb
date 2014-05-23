@@ -4,61 +4,70 @@ require 'amitree/heroku_client'
 require 'pivotal-tracker'
 require 'haml'
 require 'mail'
+require 'deployment_helper'
 
 class AutoDeployer
+  RETRY_STATE_FILE = '/tmp/auto_deployer_retries.yml'
+
   def initialize(options={})
+    @options = options
+
     @git = Amitree::GitClient.new GITHUB_REPO, GITHUB_USERNAME, GITHUB_TOKEN
     @heroku = Amitree::HerokuClient.new HEROKU_API_KEY, HEROKU_STAGING_APP, HEROKU_PRODUCTION_APP
-    PivotalTracker::Client.token = TRACKER_TOKEN
-    @tracker_cache = {}
-    @options = options
+
+    @deploy_helper = DeploymentHelper.new(git: git, heroku: heroku, tracker_project_id: TRACKER_PROJECT_ID, tracker_token: TRACKER_TOKEN)
   end
 
   def release_to_deploy
-    production_release = @heroku.current_production_release
-    staging_releases = @heroku.staging_releases_since(@heroku.staging_release_name(production_release))
-    prod_commit = production_release['commit']
-
-    puts "Production release is #{prod_commit}"
-
-    staging_releases.reverse.each do |staging_release|
-      staging_commit = staging_release['commit']
-      stories = @git.stories_worked_on_between(prod_commit, staging_commit)
-      puts "- Trying staging release #{staging_release['name']} with commit #{staging_commit}"
-      puts "  - Stories: #{stories.inspect}"
-      unaccepted_stories = stories.select { |story| get_tracker_status(story) != 'accepted' }
-      if unaccepted_stories.length > 0
-        puts "    - Some stories are not yet accepted: #{unaccepted_stories.inspect}"
-      else
-        puts "    - This release is good to go!"
-        return staging_release
-      end
+    release_details = @deploy_helper.compute_release(verbose: true)
+    unless release_details.production_promoted_from_staging?
+      raise Error.new "Production release was not promoted from staging: #{release_details.production_release['descr']}"
     end
 
-    return nil
+    return release_details.staging_release_to_deploy
   end
 
   def deploy
-    old_release = @heroku.current_production_release
-    release = release_to_deploy
-    if release.nil?
-      puts "No new release to deploy"
-    else
-      puts "Deploy #{release['name']} to production"
-      @heroku.deploy_to_production(release['name'], @options)
-      notify_team old_release, release
+    with_error_handling('Exception caught while trying to determine release to deploy', retries: 3) do
+      old_release = @heroku.current_production_release
+      release = release_to_deploy
+      if release.nil?
+        puts "No new release to deploy"
+      else
+        puts "Deploy #{release['name']} to production"
+        with_error_handling('Exception caught during production deployment') do
+          @heroku.deploy_to_production(release['name'], @options)
+          notify_team old_release, release
+        end
+      end
     end
+  end
+
+  def with_error_handling(message, options={})
+    yield
   rescue => e
-    send_message :error_notification, 'Exception caught during production deployment', exception: e
+    if options[:retries] && retry_attempts < options[:retries]
+      puts "Exception encountered, will retry before sending alert"
+      set_retry_attempts(retry_attempts + 1)
+    else
+      set_retry_attempts(0) if options[:retries]
+      send_message :error_notification, message, exception: e
+    end
     raise e
   end
 
-  def get_tracker_status(story_id)
-    tracker_data(story_id).current_state
+  def retry_attempts
+    YAML.load_file(RETRY_STATE_FILE)[:attempts]
+  rescue => e
+    0
   end
 
-  def tracker_data(story_id)
-    @tracker_cache[story_id] ||= PivotalTracker::Project.find(TRACKER_PROJECT_ID).stories.find(story_id)
+  def set_retry_attempts(attempts)
+    with_error_handling('Failed to update retry attempt count') do
+      File.open(RETRY_STATE_FILE, 'w') do |out|
+        YAML.dump({attempts: attempts}, out)
+      end
+    end
   end
 
   def notify_team(old_release, new_release)

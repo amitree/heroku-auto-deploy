@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.1.0'
+ruby '2.1.1'
 
 gem 'pivotal-tracker', '0.5.12'
 gem 'mail', '2.5.4'
