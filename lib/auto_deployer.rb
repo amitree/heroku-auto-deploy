@@ -26,17 +26,17 @@ class AutoDeployer
   end
 
   def deploy
-    with_error_handling('Exception caught while trying to determine release to deploy', retries: 3) do
-      old_release = @heroku.current_production_release
-      release = release_to_deploy
-      if release.nil?
-        puts "No new release to deploy"
-      else
+    old_release, release = with_error_handling('Exception caught while trying to determine release to deploy', retries: 3) do
+      [@heroku.current_production_release, release_to_deploy]
+    end
+
+    if release.nil?
+      puts "No new release to deploy"
+    else
+      with_error_handling('Exception caught during production deployment') do
         puts "Deploy #{release['name']} to production"
-        with_error_handling('Exception caught during production deployment') do
-          @heroku.deploy_to_production(release['name'], @options)
-          notify_team old_release, release
-        end
+        @heroku.deploy_to_production(release['name'], @options)
+        notify_team old_release, release
       end
     end
   end
