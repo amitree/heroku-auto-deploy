@@ -70,7 +70,7 @@ class AutoDeployer
 
   def notify_team(old_release, new_release)
     git_commits = @git.commits_between(old_release['commit'], new_release['commit'])
-    story_ids = @git.stories_worked_on_between(old_release['commit'], new_release['commit'])
+    story_ids = stories_worked_on_between(old_release['commit'], new_release['commit']).map(&:id)
     send_message(:push_to_prod, 'New code deployed to production', git_commits: git_commits, story_ids: story_ids)
   end
 
