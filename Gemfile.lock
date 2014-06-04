@@ -5,7 +5,7 @@ GEM
     builder (3.2.2)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
-    excon (0.33.0)
+    excon (0.35.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     haml (4.0.5)
@@ -15,7 +15,7 @@ GEM
     heroku-api (0.3.17)
       excon (~> 0.27)
       multi_json (~> 1.8.2)
-    heroku_deployer (0.3)
+    heroku_deployer (0.4)
       heroku-api (= 0.3.17)
       octokit (= 2.7.1)
       pivotal-tracker (= 0.5.12)
@@ -63,6 +63,6 @@ PLATFORMS
 
 DEPENDENCIES
   haml (= 4.0.5)
-  heroku_deployer (= 0.3)
+  heroku_deployer (= 0.4)
   mail (= 2.5.4)
   xray
