@@ -43,6 +43,7 @@ class AutoDeployer
 
   def with_error_handling(message, options={})
     yield
+    set_retry_attempts(0) if options[:retries]
   rescue => e
     if options[:retries] && retry_attempts < options[:retries]
       puts "Exception encountered, will retry before sending alert"
@@ -51,7 +52,7 @@ class AutoDeployer
       set_retry_attempts(0) if options[:retries]
       send_message :error_notification, message, exception: e
     end
-    raise e
+    raise e unless options[:no_raise]
   end
 
   def retry_attempts
@@ -61,7 +62,7 @@ class AutoDeployer
   end
 
   def set_retry_attempts(attempts)
-    with_error_handling('Failed to update retry attempt count') do
+    with_error_handling('Failed to update retry attempt count', no_raise: true) do
       File.open(RETRY_STATE_FILE, 'w') do |out|
         YAML.dump({attempts: attempts}, out)
       end
