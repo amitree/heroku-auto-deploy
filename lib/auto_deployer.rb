@@ -42,8 +42,9 @@ class AutoDeployer
   end
 
   def with_error_handling(message, options={})
-    yield
-    set_retry_attempts(0) if options[:retries]
+    yield.tap do
+      set_retry_attempts(0) if options[:retries]
+    end
   rescue => e
     if options[:retries] && retry_attempts < options[:retries]
       puts "Exception encountered, will retry before sending alert"
