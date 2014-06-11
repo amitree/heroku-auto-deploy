@@ -35,7 +35,11 @@ class AutoDeployer
     else
       with_error_handling('Exception caught during production deployment') do
         puts "Deploy #{release['name']} to production"
-        @heroku.deploy_to_production(release['name'], @options)
+        begin
+          @heroku.deploy_to_production(release['name'], @options)
+        rescue Amitree::HerokuClient::PostDeploymentError => e
+          send_message :error_notification, 'Exception caught after production deployment', exception: e
+        end
         notify_team old_release, release
       end
     end

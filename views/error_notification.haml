@@ -11,3 +11,13 @@
         - exception.backtrace.each do |line|
           = line
           %br
+    - while exception.cause
+      - exception = exception.cause
+      %h2
+        Caused by: #{exception.class}
+      %div
+        #{exception.message}
+        %ul
+          - exception.backtrace.each do |line|
+            = line
+            %br
