@@ -15,7 +15,7 @@ GEM
     heroku-api (0.3.17)
       excon (~> 0.27)
       multi_json (~> 1.8.2)
-    heroku_deployer (0.6)
+    heroku_deployer (0.6.1)
       heroku-api (= 0.3.17)
       octokit (= 2.7.1)
       pivotal-tracker (= 0.5.12)
@@ -63,6 +63,6 @@ PLATFORMS
 
 DEPENDENCIES
   haml (= 4.0.5)
-  heroku_deployer (= 0.6)
+  heroku_deployer (= 0.6.1)
   mail (= 2.5.4)
   xray
