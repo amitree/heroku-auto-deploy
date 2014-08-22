@@ -7,6 +7,7 @@ require 'auto_deployer'
 options = {}
 options[:notify_email] = NOTIFY_EMAIL_TO
 options[:errors_email] = ERRORS_EMAIL_TO
+options[:rake] = 'recurring:init'
 
 OptionParser.new do |opts|
   opts.banner = "Usage: deploy_to_heroku [options]"
