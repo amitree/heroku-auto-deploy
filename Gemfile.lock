@@ -34,7 +34,7 @@ GEM
       moneta
       multi_json (>= 1.9.2)
       netrc
-    heroku_deployer (0.7)
+    heroku_deployer (0.7.2)
       octokit (= 2.7.1)
       platform-api (= 0.2.0)
       rendezvous (= 0.0.2)
@@ -79,7 +79,7 @@ PLATFORMS
 
 DEPENDENCIES
   haml (= 4.0.5)
-  heroku_deployer (= 0.7)
+  heroku_deployer (= 0.7.2)
   mail (= 2.5.4)
   pivotal-tracker!
   xray
