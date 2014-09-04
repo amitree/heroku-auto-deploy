@@ -2,4 +2,4 @@
 
 exec >>/var/log/deploy_to_heroku.log 2>&1
 cd __DIR__
-exec bin/deploy_to_heroku | perl -MPOSIX -ne 'BEGIN { $, = " " } print strftime("%Y-%m-%d %H:%M:%S", localtime), $_;' 
+exec bin/deploy_to_heroku | perl -MPOSIX -ne 'BEGIN { $, = " "; $| = 1 } print strftime("%Y-%m-%d %H:%M:%S", localtime), $_;' 
