@@ -75,8 +75,10 @@ class AutoDeployer
   end
 
   def notify_team(old_release, new_release)
-    git_commits = @git.commits_between(old_release['commit'], new_release['commit'])
-    story_ids = @deploy_helper.stories_worked_on_between(old_release['commit'], new_release['commit']).map(&:id)
+    old_commit = @heroku.get_production_commit(old_release)
+    new_commit = @heroku.get_staging_commit(new_release)
+    git_commits = @git.commits_between(old_commit, new_commit)
+    story_ids = @deploy_helper.stories_worked_on_between(old_commit, new_commit).map(&:id)
     send_message(:push_to_prod, 'New code deployed to production', git_commits: git_commits, story_ids: story_ids)
   end
 
