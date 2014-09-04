@@ -4,6 +4,8 @@ $LOAD_PATH << File.expand_path('../../lib', __FILE__)
 require 'optparse'
 require 'auto_deployer'
 
+STDOUT.sync = true
+
 options = {}
 options[:notify_email] = NOTIFY_EMAIL_TO
 options[:errors_email] = ERRORS_EMAIL_TO
