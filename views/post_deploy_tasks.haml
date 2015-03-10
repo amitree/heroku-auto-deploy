@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+  %body
+    %h1
+      Manual post-deployment action required
+    %ul
+      - post_deploy_tasks.each do |task|
+        %li
+          = task
+    %div
+      For more details, see Tracker:
+      %a{href: story.url}
+        \##{story_id} #{story.name}
