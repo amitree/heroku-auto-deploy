@@ -1,85 +1,73 @@
-GIT
-  remote: git://github.com/amitree/pivotal-tracker.git
-  revision: a9d8e6dbdd0815f455d5b825945f1dc74a0f6e1c
-  specs:
-    pivotal-tracker (0.5.12)
-      builder
-      builder
-      crack
-      happymapper (>= 0.3.2)
-      nokogiri (>= 1.4.3)
-      nokogiri (>= 1.5.5)
-      nokogiri-happymapper (>= 0.5.4)
-      rest-client (>= 1.6.0)
-      rest-client (~> 1.6.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.6)
+    addressable (2.3.8)
     builder (3.2.2)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
-    excon (0.39.5)
-    faraday (0.9.0)
+    excon (0.45.4)
+    faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
-    haml (4.0.5)
+    haml (4.0.7)
       tilt
-    happymapper (0.4.1)
-      libxml-ruby (~> 2.0)
-    heroics (0.0.12)
+    heroics (0.0.14)
       erubis (~> 2.7.0)
       excon
       moneta
       multi_json (>= 1.9.2)
       netrc
-    heroku_deployer (0.7.5)
+    heroku_deployer (0.7.6)
       octokit (= 2.7.1)
+      pivotal-tracker (= 0.5.13)
       platform-api (= 0.2.0)
       rendezvous (= 0.0.2)
-    json (1.8.1)
-    libxml-ruby (2.7.0)
-    mail (2.5.4)
-      mime-types (~> 1.16)
-      treetop (~> 1.4.8)
-    mime-types (1.25.1)
-    mini_portile (0.6.0)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
+    mail (2.6.3)
+      mime-types (>= 1.16, < 3)
+    mime-types (2.6.1)
+    mini_portile (0.6.2)
     moneta (0.8.0)
-    multi_json (1.10.1)
+    multi_json (1.11.2)
     multipart-post (2.0.0)
-    netrc (0.7.7)
-    nokogiri (1.6.3.1)
-      mini_portile (= 0.6.0)
+    netrc (0.10.3)
+    nokogiri (1.6.6.2)
+      mini_portile (~> 0.6.0)
     nokogiri-happymapper (0.5.9)
       nokogiri (~> 1.5)
     octokit (2.7.1)
       sawyer (~> 0.5.2)
+    pivotal-tracker (0.5.13)
+      builder
+      crack
+      nokogiri (>= 1.5.5)
+      nokogiri-happymapper (>= 0.5.4)
+      rest-client (>= 1.8.0)
     platform-api (0.2.0)
       heroics (~> 0.0.10)
-    polyglot (0.3.4)
-    rdoc (4.1.1)
-      json (~> 1.4)
     rendezvous (0.0.2)
-    rest-client (1.6.8)
-      mime-types (~> 1.16)
-      rdoc (>= 2.4.2)
-    safe_yaml (1.0.3)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    safe_yaml (1.0.4)
     sawyer (0.5.5)
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
     tilt (2.0.1)
-    treetop (1.4.15)
-      polyglot
-      polyglot (>= 0.3.1)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
     xray (1.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  haml (= 4.0.5)
-  heroku_deployer (= 0.7.5)
-  mail (= 2.5.4)
-  pivotal-tracker!
+  haml
+  heroku_deployer
+  mail
   xray
