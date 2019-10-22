@@ -11,7 +11,8 @@ GEM
     excon (0.45.4)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
-    haml (4.0.7)
+    haml (5.0.0)
+      temple (>= 0.8.0)
       tilt
     heroics (0.0.14)
       erubis (~> 2.7.0)
@@ -57,7 +58,8 @@ GEM
     sawyer (0.5.5)
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
-    tilt (2.0.1)
+    temple (0.8.2)
+    tilt (2.0.10)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
