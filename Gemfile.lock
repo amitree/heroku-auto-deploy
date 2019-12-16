@@ -8,7 +8,7 @@ GEM
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
-    excon (0.45.4)
+    excon (0.71.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     haml (4.0.7)
